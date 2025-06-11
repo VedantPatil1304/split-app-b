@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Split App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2d3aeb5d4.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-wallet"></i> Split App</h1>
+
+    <form action="/expenses" method="post" class="form">
+      <input name="amount" placeholder="Amount (₹)" required />
+      <input name="description" placeholder="Description" required />
+      <input name="paid_by" placeholder="Paid By" required />
+      <input name="participants" placeholder="Participants (comma-separated)" required />
+
+      <select name="share_type" required>
+        <option value="equal">Equal</option>
+        <option value="percentage">Percentage</option>
+        <option value="exact">Exact Amount</option>
+      </select>
+
+      <textarea name="shares"
+        placeholder='Only for "percentage" or "exact". Format: name:value, e.g. Sanket:200, Om:100'></textarea>
+
+      <button type="submit"><i class="fas fa-plus-circle"></i> Add Expense</button>
+    </form>
+
+    <h2><i class="fas fa-receipt"></i> Expenses</h2>
+    <ul class="expense-list">
+      <% expenses.forEach(exp => { %>
+        <li>
+          <p><strong><i class="fas fa-comment-dollar"></i> <%= exp.description %></strong></p>
+          <p>Amount: ₹<%= exp.amount %></p>
+          <p>Paid by: <i class="fas fa-user-circle"></i> <%= exp.paid_by %></p>
+          <p>Participants: <i class="fas fa-users"></i> <%= exp.participants.join(', ') %></p>
+          <p>Share Type: <%= exp.share_type %></p>
+
+<% if (exp.share_type !== 'equal' && exp.shares && exp.shares.length > 0) { %>
+            <p>Shares:</p>
+            <ul>
+              <% exp.shares.forEach(share => { %>
+                <li><%= share.person %>: ₹<%= share.value %></li>
+              <% }) %>
+            </ul>
+          <% } %>
+
+          <div style="margin-top: 0.5rem;">
+            <form action="/expenses/<%= exp._id %>?_method=DELETE" method="POST" style="display:inline;">
+              <button class="btn-danger"><i class="fas fa-trash"></i> Delete</button>
+            </form>
+            <form action="/edit/<%= exp._id %>" method="GET" style="display:inline;">
+              <button class="btn-edit"><i class="fas fa-edit"></i> Edit</button>
+            </form>
+          </div>
+        </li>
+      <% }) %>
+    </ul>
+
+    <a href="/summary" style="padding: 10px 20px; background-color: #2196F3; color: white; text-decoration: none; border-radius: 5px;">View Settlement Summary</a>
+
+  </div>
+</body>
+</html>

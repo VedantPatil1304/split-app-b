@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Expense</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/a2d3aeb5d4.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1><i class="fas fa-pen"></i> Edit Expense</h1>
+
+    <form action="/expenses/<%= expense._id %>?_method=PUT" method="POST" class="form">
+      <input name="amount" value="<%= expense.amount %>" placeholder="Amount (₹)" required />
+      <input name="description" value="<%= expense.description %>" placeholder="Description" required />
+      <input name="paid_by" value="<%= expense.paid_by %>" placeholder="Paid By" required />
+      <input name="participants" value="<%= expense.participants.join(', ') %>" placeholder="Participants (comma-separated)" required />
+
+      <select name="share_type" required>
+        <option value="equal" <%= expense.share_type === 'equal' ? 'selected' : '' %>>Equal</option>
+        <option value="percentage" <%= expense.share_type === 'percentage' ? 'selected' : '' %>>Percentage</option>
+        <option value="exact" <%= expense.share_type === 'exact' ? 'selected' : '' %>>Exact Amount</option>
+      </select>
+
+      <textarea name="shares"
+        placeholder='Only for "percentage" or "exact". Format: name:value, e.g. Sanket:200, Om:100'><%= 
+          expense.shares && expense.shares.length > 0 
+          ? expense.shares.map(s => `${s.person}:${s.value}`).join(', ') 
+          : '' 
+        %></textarea>
+
+      <button type="submit"><i class="fas fa-save"></i> Update Expense</button>
+    </form>
+
+    <a href="/" style="display:block; margin-top:1rem;">
+      <i class="fas fa-arrow-left"></i> Back to Home
+    </a>
+  </div>
+</body>
+</html>
